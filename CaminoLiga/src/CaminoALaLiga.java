@@ -81,14 +81,14 @@ public class CaminoALaLiga {
              "Julian Alvarez", "Sorloth", "Correa",
              "Riquelme"}
         };
-
+        //CONSTANTES
+        final int NUM_TITULARES=11;
         // Variables
         int equipo;
         int opcion;
-        int puntos[] = new int[equipos.length];
-        int partidos[] = new int[equipos.length];
-
-        String[] titulares = new String[11];//11 porque es el numero para titular
+        int[] puntos = new int[equipos.length];
+        int[] partidos = new int[equipos.length];
+        String[] titulares = new String[NUM_TITULARES];
         boolean[] elegidos = new boolean[jugadores[0].length];
 
         
@@ -113,29 +113,30 @@ public class CaminoALaLiga {
 
         //Filtro para obligar que se eliga un número del 1 al 8, si no se elige muestra dicho error
         while (equipo < 0 || equipo > 7) {
-            System.out.print("Numero incorrecto. Elige (1-8) y despues pulsa ENTER: ");
+            System.out.print("Número incorrecto. Elige (1-8) y despues pulsa ENTER: ");
             equipo = sc.nextInt() - 1;
         }
 
         sc.nextLine();
 
         
-
+        System.out.println("Bienvenido a tu nuevo club: " + equipos[equipo]+(" .Suerte en la temporada,las expectativas son muy altas."));
         // Menu
+
         do {
 
             System.out.println();
             System.out.println("========= MENU =========");
-            System.out.println("Bienvenido a tu nuevo club: " + equipos[equipo]+(".Suerte en la temporada,las espectativas son muy altas."));
+            
             System.out.println("========================");
             System.out.println("1. Ver Plantilla");
-            System.out.println("2. Elegir 11 titular");
+            System.out.println("2. Elegir equipo titular");
             System.out.println("3. Jugar partido");
             System.out.println("4. Clasificación");
             System.out.println("5. Salir del juego");
             System.out.println("========================");
 
-            System.out.print("Elige una opción:(1-5) y despues pulsa ENTER: ");
+            System.out.print("Elige una opción:(1-5) y después pulsa ENTER: ");
             opcion = sc.nextInt();
             sc.nextLine();
             switch (opcion) {
@@ -151,31 +152,34 @@ public class CaminoALaLiga {
                 
                 case 2:
                     //Mostramos los jugadores disponibles con su número asociado
-                    for (int i = 0; i < 20; i++) {
+                    for (int i = 0; i <jugadores[equipo].length; i++) {
                         System.out.println((i + 1) + ". " + jugadores[equipo][i]);
-                        System.out.println("========================");
+                         System.out.println("========================");
+                         elegidos[i] = false;
                     }
+
+        
 
                     
 
-                    for (int i = 0; i < 11; i++) {
+                    for (int i = 0; i < titulares.length; i++) {
 
                         System.out.print("Elige jugador " + (i + 1) + ": ");
                         int numero = sc.nextInt();
-                        //Filtro para que el numero marcado esté entre el rango 1 y 20, no valen negativos,0 o mayores de 21 puesto solo tenemos 20 jugadores
-                        while (numero < 1 || numero > 20 || elegidos[numero - 1]) {
+                        //Filtro para que el numero marcado esté entre el rango 1 y 20, no valen negativos,0 o mayores de 20 puesto solo tenemos 20 jugadores
+                        while (numero < 1 || numero > jugadores[equipo].length || elegidos[numero - 1]) {
 
                         System.out.print("Jugador incorrecto o repetido. Elige otro: ");
                         numero = sc.nextInt();
                         }
-                        //para reconocer elemento seleccionado¿?
+                        //para reconocer elemento seleccionado
                         elegidos[numero - 1] = true;
                         titulares[i] = jugadores[equipo][numero - 1];
                     }
                     //Mostramos al acabar la selección los 11 jugadores elegidos
                     System.out.println("TU EQUIPO TITULAR:");
 
-                    for (int i = 0; i < 11; i++) {
+                    for (int i = 0; i < NUM_TITULARES; i++) {
                         System.out.println(titulares[i]);
                     }
 
@@ -187,16 +191,16 @@ public class CaminoALaLiga {
                     // Comprobar si hay 11 titulares
                     if (titulares[0] == null) {
 
-                        System.out.println("Primero debes elegir tus 11 jugadores.");
+                        System.out.println("Primero debes elegir tus once jugadores del equipo titular.");
 
                     } else {
                         //selección del rival,se multiplica por equipos.length por si en un futuro se añaden mas equipos/jugadores. Si no seria *8 
                         int rival = (int)(Math.random() *equipos.length);
-                        //por si el math.random saca el numero de tu equipo, para que no de error, vuelve a salir
+                        //por si el math.random saca el numero de tu equipo, para que no de error, vuelve a salir(para no jugar contra tu mismo)
                         while (rival == equipo) {
                             rival = (int)(Math.random() * equipos.length);
                         }
-                        //con math.random se elige un número de goles a cada equipo
+                        //con math.random se elige un número de goles a cada equipo(MÁX 4 goles)
                         int goles1 = (int)(Math.random() * 5);
                         int goles2 = (int)(Math.random() * 5);
 
@@ -215,19 +219,22 @@ public class CaminoALaLiga {
 
                         //aumentar numero de partidos en la clasificación
                         partidos[equipo]++;
+                        partidos[rival]++;
 
                         if (goles1 > goles2) {//si el equipo1 mete mas goles que el equipo2 gana y suma 3 puntos
 
                             puntos[equipo] += 3;
+                            puntos[rival] +=0;
                             System.out.println("¡HAS GANADO! +3 PUNTOS");
 
                         } else if (goles1 == goles2) {//si el equipo1 mete los mismos goles que el equipo2 se suma 1 punto
 
                             puntos[equipo]++;
+                            puntos[rival]++;
                             System.out.println("EMPATE. +1 PUNTO");
 
                         } else {//si el equipo1 mete menos goles que el equipo2 no gana nada, 0 puntos
-
+                            puntos[rival]+=3;
                             System.out.println("HAS PERDIDO. 0 PUNTOS");
 
                         }
@@ -238,13 +245,13 @@ public class CaminoALaLiga {
                 // Clasificación
                 case 4:
 
-                    System.out.println("====== CLASIFICACION ======");
+                    System.out.println("====== CLASIFICACIÓN ======");
 
                     for (int i = 0; i < equipos.length; i++) {
-
-                        System.out.println(equipos[i] +"- Partidos: " + partidos[i] +"- Puntos: " + puntos[i]);
+                        System.out.printf("%-20s  Partidos: %2d Puntos: %2d%n", equipos[i], partidos[i], puntos[i]);
+                       
                     }
-                    sc.nextLine();
+                  
                     break;
 
                 // SALIR
@@ -257,7 +264,7 @@ public class CaminoALaLiga {
 
                 default:
 
-                    System.out.println("Opcion incorrecta.");
+                    System.out.println("Opción incorrecta.");
 
             }
 
@@ -274,4 +281,4 @@ public class CaminoALaLiga {
 
     }
 }
-//al realizar pruebas con persona externa al poner en la selección de 11 titular , una de las pruebas marca 10a y da error y rompe el programa:Solucion encontrada usar .hasNextInt??
+
